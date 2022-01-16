@@ -7,6 +7,9 @@
 #include <stdlib.h>     /* srand, rand */
 #include <queue>
 
+#define _USE_MATH_DEFINES // for C++
+#include <math.h>
+
 
 namespace DIP_HW1 {
 
@@ -71,6 +74,14 @@ namespace DIP_HW1 {
 	private: System::Windows::Forms::TextBox^  UpperBoundText;
 
 	private: System::Windows::Forms::TextBox^  LowerBoundText;
+	private: System::Windows::Forms::Button^  GaussianFilterButton;
+	private: System::Windows::Forms::TextBox^  FilterSizeText;
+	private: System::Windows::Forms::GroupBox^  CannyEdgeBox;
+	private: System::Windows::Forms::Button^  CannyEdgeDetectionButton;
+	private: System::Windows::Forms::TextBox^  CannyUpperThreshholdText;
+	private: System::Windows::Forms::TextBox^  CannyLowThreshholdText;
+
+
 
 
 	private: System::ComponentModel::Container ^components;
@@ -96,6 +107,8 @@ namespace DIP_HW1 {
 			this->MedianFilterButton = (gcnew System::Windows::Forms::Button());
 			this->MeanFilterButton = (gcnew System::Windows::Forms::Button());
 			this->SmoothFilterBox = (gcnew System::Windows::Forms::GroupBox());
+			this->FilterSizeText = (gcnew System::Windows::Forms::TextBox());
+			this->GaussianFilterButton = (gcnew System::Windows::Forms::Button());
 			this->EqualizationBox = (gcnew System::Windows::Forms::GroupBox());
 			this->UpperBoundText = (gcnew System::Windows::Forms::TextBox());
 			this->LowerBoundText = (gcnew System::Windows::Forms::TextBox());
@@ -122,6 +135,10 @@ namespace DIP_HW1 {
 			this->ProcessHistoChart = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->ConnectedComponentBox = (gcnew System::Windows::Forms::GroupBox());
 			this->ClusterButton = (gcnew System::Windows::Forms::Button());
+			this->CannyEdgeBox = (gcnew System::Windows::Forms::GroupBox());
+			this->CannyEdgeDetectionButton = (gcnew System::Windows::Forms::Button());
+			this->CannyLowThreshholdText = (gcnew System::Windows::Forms::TextBox());
+			this->CannyUpperThreshholdText = (gcnew System::Windows::Forms::TextBox());
 			this->ExtractionBox->SuspendLayout();
 			this->SmoothFilterBox->SuspendLayout();
 			this->EqualizationBox->SuspendLayout();
@@ -134,6 +151,7 @@ namespace DIP_HW1 {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SourceHistoChart))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ProcessHistoChart))->BeginInit();
 			this->ConnectedComponentBox->SuspendLayout();
+			this->CannyEdgeBox->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// ExtractionRButton
@@ -191,41 +209,61 @@ namespace DIP_HW1 {
 			// 
 			// MedianFilterButton
 			// 
-			this->MedianFilterButton->Location = System::Drawing::Point(136, 21);
+			this->MedianFilterButton->Location = System::Drawing::Point(67, 21);
 			this->MedianFilterButton->Name = L"MedianFilterButton";
-			this->MedianFilterButton->Size = System::Drawing::Size(75, 23);
+			this->MedianFilterButton->Size = System::Drawing::Size(50, 23);
 			this->MedianFilterButton->TabIndex = 8;
-			this->MedianFilterButton->Text = L"Median Filter";
+			this->MedianFilterButton->Text = L"Median";
 			this->MedianFilterButton->UseVisualStyleBackColor = true;
 			this->MedianFilterButton->Click += gcnew System::EventHandler(this, &MyForm::MedianFilterButton_Click);
 			// 
 			// MeanFilterButton
 			// 
-			this->MeanFilterButton->Location = System::Drawing::Point(31, 21);
+			this->MeanFilterButton->Location = System::Drawing::Point(6, 21);
 			this->MeanFilterButton->Name = L"MeanFilterButton";
-			this->MeanFilterButton->Size = System::Drawing::Size(75, 23);
+			this->MeanFilterButton->Size = System::Drawing::Size(55, 23);
 			this->MeanFilterButton->TabIndex = 7;
-			this->MeanFilterButton->Text = L"Mean Filter";
+			this->MeanFilterButton->Text = L"Mean";
 			this->MeanFilterButton->UseVisualStyleBackColor = true;
 			this->MeanFilterButton->Click += gcnew System::EventHandler(this, &MyForm::MeanFilterButton_Click);
 			// 
 			// SmoothFilterBox
 			// 
+			this->SmoothFilterBox->Controls->Add(this->FilterSizeText);
+			this->SmoothFilterBox->Controls->Add(this->GaussianFilterButton);
 			this->SmoothFilterBox->Controls->Add(this->MeanFilterButton);
 			this->SmoothFilterBox->Controls->Add(this->MedianFilterButton);
-			this->SmoothFilterBox->Location = System::Drawing::Point(31, 119);
+			this->SmoothFilterBox->Location = System::Drawing::Point(31, 111);
 			this->SmoothFilterBox->Name = L"SmoothFilterBox";
 			this->SmoothFilterBox->Size = System::Drawing::Size(233, 61);
 			this->SmoothFilterBox->TabIndex = 9;
 			this->SmoothFilterBox->TabStop = false;
 			this->SmoothFilterBox->Text = L"Smooth Filter";
 			// 
+			// FilterSizeText
+			// 
+			this->FilterSizeText->Location = System::Drawing::Point(184, 21);
+			this->FilterSizeText->Name = L"FilterSizeText";
+			this->FilterSizeText->Size = System::Drawing::Size(39, 22);
+			this->FilterSizeText->TabIndex = 16;
+			this->FilterSizeText->Text = L"3";
+			// 
+			// GaussianFilterButton
+			// 
+			this->GaussianFilterButton->Location = System::Drawing::Point(123, 21);
+			this->GaussianFilterButton->Name = L"GaussianFilterButton";
+			this->GaussianFilterButton->Size = System::Drawing::Size(55, 23);
+			this->GaussianFilterButton->TabIndex = 9;
+			this->GaussianFilterButton->Text = L"Guassian";
+			this->GaussianFilterButton->UseVisualStyleBackColor = true;
+			this->GaussianFilterButton->Click += gcnew System::EventHandler(this, &MyForm::GaussianFilterButton_Click);
+			// 
 			// EqualizationBox
 			// 
 			this->EqualizationBox->Controls->Add(this->UpperBoundText);
 			this->EqualizationBox->Controls->Add(this->LowerBoundText);
 			this->EqualizationBox->Controls->Add(this->HistogramEqualizationButton);
-			this->EqualizationBox->Location = System::Drawing::Point(31, 201);
+			this->EqualizationBox->Location = System::Drawing::Point(31, 190);
 			this->EqualizationBox->Name = L"EqualizationBox";
 			this->EqualizationBox->Size = System::Drawing::Size(233, 63);
 			this->EqualizationBox->TabIndex = 10;
@@ -262,7 +300,7 @@ namespace DIP_HW1 {
 			// 
 			this->ThresholdingBox->Controls->Add(this->ThresholdText);
 			this->ThresholdingBox->Controls->Add(this->ThresholdEnterButton);
-			this->ThresholdingBox->Location = System::Drawing::Point(31, 285);
+			this->ThresholdingBox->Location = System::Drawing::Point(31, 273);
 			this->ThresholdingBox->Name = L"ThresholdingBox";
 			this->ThresholdingBox->Size = System::Drawing::Size(233, 59);
 			this->ThresholdingBox->TabIndex = 11;
@@ -292,7 +330,7 @@ namespace DIP_HW1 {
 			this->SobelEdgeBox->Controls->Add(this->VerticalButton);
 			this->SobelEdgeBox->Controls->Add(this->HorizontalButton);
 			this->SobelEdgeBox->Controls->Add(this->CombinedButton);
-			this->SobelEdgeBox->Location = System::Drawing::Point(31, 364);
+			this->SobelEdgeBox->Location = System::Drawing::Point(31, 355);
 			this->SobelEdgeBox->Name = L"SobelEdgeBox";
 			this->SobelEdgeBox->Size = System::Drawing::Size(233, 57);
 			this->SobelEdgeBox->TabIndex = 14;
@@ -333,7 +371,7 @@ namespace DIP_HW1 {
 			// 
 			this->EdgeOverlapBox->Controls->Add(this->EdgeText);
 			this->EdgeOverlapBox->Controls->Add(this->EdgeEnterButton);
-			this->EdgeOverlapBox->Location = System::Drawing::Point(31, 445);
+			this->EdgeOverlapBox->Location = System::Drawing::Point(31, 516);
 			this->EdgeOverlapBox->Name = L"EdgeOverlapBox";
 			this->EdgeOverlapBox->Size = System::Drawing::Size(233, 59);
 			this->EdgeOverlapBox->TabIndex = 14;
@@ -361,7 +399,7 @@ namespace DIP_HW1 {
 			// ImageRegistrationBox
 			// 
 			this->ImageRegistrationBox->Controls->Add(this->ImageRegistrationButton);
-			this->ImageRegistrationBox->Location = System::Drawing::Point(31, 606);
+			this->ImageRegistrationBox->Location = System::Drawing::Point(31, 684);
 			this->ImageRegistrationBox->Name = L"ImageRegistrationBox";
 			this->ImageRegistrationBox->Size = System::Drawing::Size(233, 63);
 			this->ImageRegistrationBox->TabIndex = 11;
@@ -380,7 +418,7 @@ namespace DIP_HW1 {
 			// 
 			// LoadButton
 			// 
-			this->LoadButton->Location = System::Drawing::Point(37, 694);
+			this->LoadButton->Location = System::Drawing::Point(37, 772);
 			this->LoadButton->Name = L"LoadButton";
 			this->LoadButton->Size = System::Drawing::Size(70, 23);
 			this->LoadButton->TabIndex = 13;
@@ -390,7 +428,7 @@ namespace DIP_HW1 {
 			// 
 			// SaveButton
 			// 
-			this->SaveButton->Location = System::Drawing::Point(113, 694);
+			this->SaveButton->Location = System::Drawing::Point(113, 772);
 			this->SaveButton->Name = L"SaveButton";
 			this->SaveButton->Size = System::Drawing::Size(70, 23);
 			this->SaveButton->TabIndex = 12;
@@ -400,7 +438,7 @@ namespace DIP_HW1 {
 			// 
 			// UndoButton
 			// 
-			this->UndoButton->Location = System::Drawing::Point(189, 694);
+			this->UndoButton->Location = System::Drawing::Point(189, 772);
 			this->UndoButton->Name = L"UndoButton";
 			this->UndoButton->Size = System::Drawing::Size(70, 23);
 			this->UndoButton->TabIndex = 11;
@@ -463,7 +501,7 @@ namespace DIP_HW1 {
 			// ConnectedComponentBox
 			// 
 			this->ConnectedComponentBox->Controls->Add(this->ClusterButton);
-			this->ConnectedComponentBox->Location = System::Drawing::Point(31, 520);
+			this->ConnectedComponentBox->Location = System::Drawing::Point(31, 598);
 			this->ConnectedComponentBox->Name = L"ConnectedComponentBox";
 			this->ConnectedComponentBox->Size = System::Drawing::Size(233, 63);
 			this->ConnectedComponentBox->TabIndex = 12;
@@ -480,11 +518,50 @@ namespace DIP_HW1 {
 			this->ClusterButton->UseVisualStyleBackColor = true;
 			this->ClusterButton->Click += gcnew System::EventHandler(this, &MyForm::ClusterButton_Click);
 			// 
+			// CannyEdgeBox
+			// 
+			this->CannyEdgeBox->Controls->Add(this->CannyUpperThreshholdText);
+			this->CannyEdgeBox->Controls->Add(this->CannyLowThreshholdText);
+			this->CannyEdgeBox->Controls->Add(this->CannyEdgeDetectionButton);
+			this->CannyEdgeBox->Location = System::Drawing::Point(31, 434);
+			this->CannyEdgeBox->Name = L"CannyEdgeBox";
+			this->CannyEdgeBox->Size = System::Drawing::Size(233, 63);
+			this->CannyEdgeBox->TabIndex = 12;
+			this->CannyEdgeBox->TabStop = false;
+			this->CannyEdgeBox->Text = L"Canny Edge Detection";
+			// 
+			// CannyEdgeDetectionButton
+			// 
+			this->CannyEdgeDetectionButton->Location = System::Drawing::Point(9, 21);
+			this->CannyEdgeDetectionButton->Name = L"CannyEdgeDetectionButton";
+			this->CannyEdgeDetectionButton->Size = System::Drawing::Size(127, 23);
+			this->CannyEdgeDetectionButton->TabIndex = 8;
+			this->CannyEdgeDetectionButton->Text = L"Canny Edge Detection";
+			this->CannyEdgeDetectionButton->UseVisualStyleBackColor = true;
+			this->CannyEdgeDetectionButton->Click += gcnew System::EventHandler(this, &MyForm::CannyEdgeDetectionButton_Click);
+			// 
+			// CannyLowThreshholdText
+			// 
+			this->CannyLowThreshholdText->Location = System::Drawing::Point(143, 22);
+			this->CannyLowThreshholdText->Name = L"CannyLowThreshholdText";
+			this->CannyLowThreshholdText->Size = System::Drawing::Size(36, 22);
+			this->CannyLowThreshholdText->TabIndex = 16;
+			this->CannyLowThreshholdText->Text = L"50";
+			// 
+			// CannyUpperThreshholdText
+			// 
+			this->CannyUpperThreshholdText->Location = System::Drawing::Point(186, 22);
+			this->CannyUpperThreshholdText->Name = L"CannyUpperThreshholdText";
+			this->CannyUpperThreshholdText->Size = System::Drawing::Size(36, 22);
+			this->CannyUpperThreshholdText->TabIndex = 17;
+			this->CannyUpperThreshholdText->Text = L"150";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1654, 862);
+			this->Controls->Add(this->CannyEdgeBox);
 			this->Controls->Add(this->ConnectedComponentBox);
 			this->Controls->Add(this->ProcessHistoChart);
 			this->Controls->Add(this->SourceHistoChart);
@@ -504,6 +581,7 @@ namespace DIP_HW1 {
 			this->Text = L"MyForm";
 			this->ExtractionBox->ResumeLayout(false);
 			this->SmoothFilterBox->ResumeLayout(false);
+			this->SmoothFilterBox->PerformLayout();
 			this->EqualizationBox->ResumeLayout(false);
 			this->EqualizationBox->PerformLayout();
 			this->ThresholdingBox->ResumeLayout(false);
@@ -517,6 +595,8 @@ namespace DIP_HW1 {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SourceHistoChart))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ProcessHistoChart))->EndInit();
 			this->ConnectedComponentBox->ResumeLayout(false);
+			this->CannyEdgeBox->ResumeLayout(false);
+			this->CannyEdgeBox->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -548,6 +628,9 @@ namespace DIP_HW1 {
 /*
 	Tool Box.
 */
+	private: bool IsInBounds(float value, float low, float high) {
+		return (value >= low) && (value <= high);
+	}
 	private: Bitmap^ resetBitmap() {
 		Bitmap^ temp = gcnew Bitmap(openImg->Width,openImg->Height);
 		for (int i = 0; i < openImg->Width; i++) {
@@ -571,6 +654,25 @@ namespace DIP_HW1 {
 	private: Color returnGrayColor(int pixel) {
 		return  Color::FromArgb(pixel, pixel, pixel);
 	}
+
+	private: Bitmap^ completeEdge(Bitmap ^ map, int size) {
+		int width = map->Width-1; int height = map->Height-1;
+		for (int j = 1; j < height; j++) {
+			for (int i = 0; i < size; ++i) {
+				map->SetPixel(i, j, map->GetPixel(size, j));
+				map->SetPixel(width-i, j, map->GetPixel(width - size, j));
+			}
+
+		}
+		for (int i = 0; i < width+1; i++) {
+			for (int j = 0; j < size; ++j) {
+				map->SetPixel(i, j, map->GetPixel(i, size));
+				map->SetPixel(i, height-j, map->GetPixel(i, height - size));
+			}
+		}
+		
+		return map;
+	}
 	private: vector<int> returnHistogram(Bitmap^ image) {
 		vector<int> Histogram(256, 0);
 		int i, j, pixel;
@@ -587,6 +689,8 @@ namespace DIP_HW1 {
 		histochart->Series["pixel"]->Points->Clear();
 		for (unsigned int i = 0; i < SourceHisto.size(); i++) histochart->Series["pixel"]->Points->AddXY(i, SourceHisto[i]);
 	}
+	
+//check if the input string can be change to int
 	private: bool check_number(System::String^ Str) {
 		std::string str = msclr::interop::marshal_as<std::string>(Str);
 		int i = 0;
@@ -595,66 +699,121 @@ namespace DIP_HW1 {
 				return false;
 		return true;
 	}
-	private: Bitmap^ returnVerticalSobel(int threshold) {
-		if (threshold < 0) threshold = 150;
-		Bitmap^ temp = gcnew Bitmap(processImg->Width,processImg->Height);
+
+// for hw 5
+	private: Bitmap^ returnGuassianFilter(int FilterSize, Bitmap^ Img) {
+		// create filter
+		vector<vector<float>> GKernel(FilterSize, vector<float>(FilterSize, 0));
+		// initialising standard deviation to 1.0
+		float sigma = 1.0;
+		float r, s = 2.0 * sigma * sigma;
+
+		// sum is for normalization
+		float sum = 0.0;
+		int conv = FilterSize / 2;
+		// generating 5x5 kernel
+		for (int x = -conv; x <= conv; x++) {
+			for (int y = -conv; y <= conv; y++) {
+				r = sqrt(x * x + y * y);
+				GKernel[x + conv][y + conv] = (exp(-(r * r) / s)) / (M_PI * s);
+				sum += GKernel[x + conv][y + conv];
+			}
+		}
+		// normalising the Kernel
+		for (int i = 0; i < FilterSize; ++i)
+			for (int j = 0; j < FilterSize; ++j)
+				GKernel[i][j] /= sum;
+
+		Bitmap^ temp = gcnew Bitmap(Img->Width, Img->Height);
+		for (int i = conv; i < temp->Width - conv; i++) {
+			for (int j = conv; j < temp->Height - conv; j++) {
+				int pixel = 0;
+				for (int k = -conv; k <= conv; k++) {
+					for (int l = -conv; l <= conv; l++) {
+						pixel += (returnGrayPixel(Img->GetPixel(i + k, j + l)) * GKernel[k + conv][l + conv]);
+					}
+				}
+				pixel = abs(pixel);
+				if (pixel > 255) pixel = 255;
+				temp->SetPixel(i, j, returnGrayColor(pixel));
+			}
+		}
+		return completeEdge(temp,conv);
+	}
+
+	private: Bitmap^ returnVerticalSobel(Bitmap^ Img) {
+		Bitmap^ temp = gcnew Bitmap(Img->Width, Img->Height);
 		vector<vector<int>> VerticalFilter = { {1,2,1},{0,0,0},{-1,-2,-1} };
-		for (int i = 0; i < temp->Width; i++) {
-			for (int j = 0; j < temp->Height; j++) {
+		for (int i = 1; i < temp->Width-1; i++) {
+			for (int j = 1; j < temp->Height-1; j++) {
 				int pixel = 0;
-				if ((i > 0) && (i < temp->Width - 1) && (j > 0) && (j < temp->Height - 1)) {
-					for (int k = -1; k <= 1; k++) {
-						for (int l = -1; l <= 1; l++) {
-							if ((i + k >= 0) && (i + k < temp->Width) && (j + l >= 0) && (j + l < temp->Height))
-								pixel += (returnGrayPixel(processImg->GetPixel(i + k, j + l)) * VerticalFilter[k + 1][l + 1]);
-						}
+				for (int k = -1; k <= 1; k++) {
+					for (int l = -1; l <= 1; l++) {
+						pixel += (returnGrayPixel(Img->GetPixel(i + k, j + l)) * VerticalFilter[k + 1][l + 1]);
 					}
-					if (abs(pixel) > threshold) pixel = 255;
-					else pixel = 0;
 				}
-				else pixel = returnGrayPixel(processImg->GetPixel(i, j));
-				Color newColor = returnGrayColor(pixel);
-				temp->SetPixel(i, j, newColor);
+				pixel = abs(pixel);
+				if (pixel > 255) pixel = 255;
+				temp->SetPixel(i, j, returnGrayColor(pixel));
 			}
 		}
-		return temp;
+		return completeEdge(temp,1);
 	}
-	private: Bitmap^ returnHorizontalSobel(int threshold) {
-		if (threshold < 0) threshold = 150;
-		Bitmap^ temp = gcnew Bitmap(processImg->Width, processImg->Height);
+	private: Bitmap^ returnHorizontalSobel(Bitmap^ Img) {
+		Bitmap^ temp = gcnew Bitmap(Img->Width, Img->Height);
 		vector<vector<int>> HorizontalFilter = { {1,0,-1},{2,0,-2},{1,0,-1} };
-		for (int i = 0; i < temp->Width; i++) {
-			for (int j = 0; j < temp->Height; j++) {
+		for (int i = 1; i < temp->Width-1; i++) {
+			for (int j = 1; j < temp->Height-1; j++) {
 				int pixel = 0;
-				if ((i > 0) && (i < temp->Width - 1) && (j > 0) && (j < temp->Height - 1)) {
-					for (int k = -1; k <= 1; k++) {
-						for (int l = -1; l <= 1; l++) {
-							if ((i + k >= 0) && (i + k < temp->Width) && (j + l >= 0) && (j + l < temp->Height))
-								pixel += (returnGrayPixel(processImg->GetPixel(i + k, j + l)) * HorizontalFilter[k + 1][l + 1]);
-						}
+				for (int k = -1; k <= 1; k++) {
+					for (int l = -1; l <= 1; l++) {
+						pixel += (returnGrayPixel(Img->GetPixel(i + k, j + l)) * HorizontalFilter[k + 1][l + 1]);
 					}
-					if (abs(pixel) > threshold) pixel = 255;
-					else pixel = 0;
 				}
-				else pixel = returnGrayPixel(processImg->GetPixel(i, j));
-				Color newColor = returnGrayColor(pixel);
-				temp->SetPixel(i, j, newColor);
+				pixel = abs(pixel);
+				if (pixel > 255) pixel = 255;
+				temp->SetPixel(i, j, returnGrayColor(pixel));
 			}
 		}
-		return temp;
+		return completeEdge(temp,1);
 	}
-	private: Bitmap^ returnSobelfilter(int threshhold) {
-		Bitmap^ Vertical = returnVerticalSobel(threshhold);
-		Bitmap^ Horizontal = returnHorizontalSobel(threshhold);
+	private: Bitmap^ returnSobelfilter(Bitmap^ Img) {
+		Bitmap^ Vertical = returnVerticalSobel(Img);
+		Bitmap^ Horizontal = returnHorizontalSobel(Img);
 		Bitmap^ Combined = gcnew Bitmap(processImg->Width, processImg->Height);
+		int verticalpixel, horizontalpixel, pixel;
 		for (int i = 0; i < Vertical->Width; i++) {
 			for (int j = 0; j < Vertical->Height; j++) {
-				if (!(returnGrayPixel(Vertical->GetPixel(i, j)) || returnGrayPixel(Horizontal->GetPixel(i, j)))) Combined->SetPixel(i, j, returnGrayColor(0));
-				else Combined->SetPixel(i, j, returnGrayColor(255));
+				verticalpixel = returnGrayPixel(Vertical->GetPixel(i, j));
+				horizontalpixel = returnGrayPixel(Horizontal->GetPixel(i, j));
+				pixel = sqrt(verticalpixel*verticalpixel + horizontalpixel* horizontalpixel);
+				if (pixel > 255) pixel = 255;
+				Combined->SetPixel(i, j, returnGrayColor(pixel));
 			}
 		}
 		return Combined;
 	}
+// for hw 6
+	private: Bitmap^ returnSobelfilter(Bitmap^ Img, int Threshhold) {
+		Bitmap^ Vertical = returnVerticalSobel(Img);
+		Bitmap^ Horizontal = returnHorizontalSobel(Img);
+		Bitmap^ EdgeApply = gcnew Bitmap(processImg->Width, processImg->Height);
+		int verticalpixel, horizontalpixel, pixel;
+		for (int i = 0; i < Vertical->Width; i++) {
+			for (int j = 0; j < Vertical->Height; j++) {
+				verticalpixel = returnGrayPixel(Vertical->GetPixel(i, j));
+				horizontalpixel = returnGrayPixel(Horizontal->GetPixel(i, j));
+				pixel = sqrt(verticalpixel*verticalpixel + horizontalpixel * horizontalpixel);
+				if (pixel < Threshhold)
+					EdgeApply->SetPixel(i, j, processImg->GetPixel(i, j));
+				else
+					EdgeApply->SetPixel(i, j, Color::FromArgb(processImg->GetPixel(i, j).R, 255, processImg->GetPixel(i, j).B));
+			}
+		}
+		return EdgeApply;
+	}
+
+// for hw 7
 	private: Color RandColor() {
 		int R = (rand() % 254) + 1;
 		int G = (rand() % 254) + 1;
@@ -725,42 +884,61 @@ namespace DIP_HW1 {
 	Second Homework.
 */
 private: System::Void MeanFilterButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	for (int i = 0; i < processImg->Width; i++) {
-		for (int j = 0; j < processImg->Height; j++) {
-			int mean = 0;
-			for (int k = i - 1; k <= i + 1; k++) {
-				for (int l = j - 1; l <= j + 1; l++) {
-					if ((k >= 0) && (k < processImg->Width) && (l >= 0) && (l < processImg->Height))	mean += returnGrayPixel(processImg->GetPixel(k, l));
+	if (check_number(FilterSizeText->Text)) {
+		Int32 FilterSize = System::Convert::ToInt32(FilterSizeText->Text);
+		Int32 FilterArea = FilterSize * FilterSize;
+		Int32 conv = FilterSize / 2;
+		Bitmap^ temp = gcnew Bitmap(processImg->Width, processImg->Height);
+		for (int i = conv; i < processImg->Width - conv; i++) {
+			for (int j = conv; j < processImg->Height - conv; j++) {
+				int mean = 0;
+				//Convolution to find local mean
+				for (int k = i - conv; k <= i + conv; k++) {
+					for (int l = j - conv; l <= j + conv; l++) {
+						mean += returnGrayPixel(processImg->GetPixel(k, l));
+					}
 				}
+				temp->SetPixel(i, j, returnGrayColor(mean / FilterArea));
 			}
-			Color newColor = returnGrayColor(mean / 9);
-			processImg->SetPixel(i, j, newColor);
 		}
+		processImg = completeEdge(temp,conv);
+		setHistogramChart(ProcessHistoChart, processImg);
+		ProcessImageBox->Image = processImg;
 	}
-	setHistogramChart(ProcessHistoChart, processImg);
-	ProcessImageBox->Image = processImg;
 }
 private: System::Void MedianFilterButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	for (int i = 1; i < processImg->Width; i++) {
-		for (int j = 1; j < processImg->Height; j++) {
-			vector<int> convec = { };
-			for (int k = i - 1; k <= i + 1; k++) {
-				for (int l = j - 1; l <= j + 1; l++) {
-					int insertion = 0;
-					if ((k >= 0) && (k < processImg->Width) && (l >= 0) && (l < processImg->Height))	insertion = returnGrayPixel(processImg->GetPixel(k, l));
-					size_t idx = 0;
-					for (idx; idx < convec.size(); idx++) {
-						if (convec[idx] > insertion) break;
+	if (check_number(FilterSizeText->Text)) {
+		Int32 FilterSize = System::Convert::ToInt32(FilterSizeText->Text);
+		Int32 conv = FilterSize / 2;
+		Bitmap^ temp = gcnew Bitmap(processImg->Width, processImg->Height);
+		for (int i = conv; i < processImg->Width - conv; i++) {
+			for (int j = conv; j < processImg->Height - conv; j++) {
+				int FilterArea = FilterSize * FilterSize;
+				vector<int> convec(FilterArea, 0); int idx = 0;
+				//Convolution to find local median
+				for (int k = i - conv; k <= i + conv; k++) {
+					for (int l = j - conv; l <= j + conv; l++) {
+						convec[idx++] = returnGrayPixel(processImg->GetPixel(k, l));
 					}
-					convec.insert(convec.begin() + idx, insertion);
 				}
+				std::nth_element(convec.begin(), convec.begin() + FilterArea/2, convec.end());
+				temp->SetPixel(i, j, returnGrayColor(convec[FilterArea / 2]));
 			}
-			Color newColor = returnGrayColor(convec[4]);
-			processImg->SetPixel(i, j, newColor);
 		}
+		processImg = completeEdge(temp,conv);
+		setHistogramChart(ProcessHistoChart, processImg);
+		ProcessImageBox->Image = processImg;
 	}
-	setHistogramChart(ProcessHistoChart, processImg);
-	ProcessImageBox->Image = processImg;
+}
+
+private: System::Void GaussianFilterButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	if (check_number(FilterSizeText->Text)) {
+		Int32 FilterSize = System::Convert::ToInt32(FilterSizeText->Text);
+		processImg = returnGuassianFilter(FilterSize, processImg);
+		setHistogramChart(ProcessHistoChart, processImg);
+		ProcessImageBox->Image = processImg;
+	}
+
 }
 /*
 	Third Homework.
@@ -769,8 +947,7 @@ private: System::Void HistogramEqualizationButton_Click(System::Object^  sender,
 	if (check_number(LowerBoundText->Text) && check_number(UpperBoundText->Text)) {
 		Int32 LowerBound = System::Convert::ToInt32(LowerBoundText->Text);
 		Int32 UpperBound = System::Convert::ToInt32(UpperBoundText->Text);
-		if ((LowerBound <= 255) && (LowerBound >= 0) &&
-			(UpperBound <= 255) && (UpperBound >= 0) && (LowerBound< UpperBound)) {
+		if (IsInBounds(LowerBound,0,255) && IsInBounds(UpperBound, 0, 255) && (LowerBound< UpperBound)) {
 			vector<int> SourceHisto = returnHistogram(processImg);
 			int totalpixel = processImg->Width * processImg->Height;
 			int accum = 0;
@@ -801,7 +978,7 @@ private: System::Void ThresholdEnterButton_Click(System::Object^  sender, System
 	if (check_number(ThresholdText->Text)) {
 		Int32 Threshhold = System::Convert::ToInt32(ThresholdText->Text);
 		int i, j, pixel;
-		if ((Threshhold <= 255) && (Threshhold >= 0)) {
+		if (IsInBounds(Threshhold, 0, 255)) {
 			for (i = 0; i < processImg->Width; i++) {
 				for (j = 0; j < processImg->Height; j++) {
 					if (returnGrayPixel(processImg->GetPixel(i, j)) >= Threshhold) pixel = 255;
@@ -819,19 +996,19 @@ private: System::Void ThresholdEnterButton_Click(System::Object^  sender, System
 	Fifth Homework.
 */
 private: System::Void VerticalButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	Bitmap^ temp = returnVerticalSobel(-1);
-	setHistogramChart(ProcessHistoChart, temp);
-	ProcessImageBox->Image = temp;
+	processImg = returnVerticalSobel(processImg);
+	setHistogramChart(ProcessHistoChart, processImg);
+	ProcessImageBox->Image = processImg;
 }
 private: System::Void HorizontalButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	Bitmap^ temp = returnHorizontalSobel(-1);
-	setHistogramChart(ProcessHistoChart, temp);
-	ProcessImageBox->Image = temp;
+	processImg = returnHorizontalSobel(processImg);
+	setHistogramChart(ProcessHistoChart, processImg);
+	ProcessImageBox->Image = processImg;
 }
 private: System::Void CombinedButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	Bitmap^ Combined = returnSobelfilter(-1);
-	setHistogramChart(ProcessHistoChart, Combined);
-	ProcessImageBox->Image = Combined;
+	processImg = returnSobelfilter(processImg);
+	setHistogramChart(ProcessHistoChart, processImg);
+	ProcessImageBox->Image = processImg;
 }
 /*
 	Sixth Homework.
@@ -839,17 +1016,10 @@ private: System::Void CombinedButton_Click(System::Object^  sender, System::Even
 private: System::Void EdgeEnterButton_Click(System::Object^  sender, System::EventArgs^  e) {
 	if (check_number(EdgeText->Text)) {
 		Int32 Threshhold = System::Convert::ToInt32(EdgeText->Text);
-		if ((Threshhold <= 255) && (Threshhold >= 0)) {
-			Bitmap^ EdgeApply = returnSobelfilter(Threshhold);
-			for (int i = 0; i < EdgeApply->Width; i++) {
-				for (int j = 0; j < EdgeApply->Height; j++) {
-					if (!(EdgeApply->GetPixel(i, j).G)) EdgeApply->SetPixel(i, j, processImg->GetPixel(i, j));
-					else
-						EdgeApply->SetPixel(i, j, Color::FromArgb(processImg->GetPixel(i, j).R, 255, processImg->GetPixel(i, j).B));
-				}
-			}
-			setHistogramChart(ProcessHistoChart, EdgeApply);
-			ProcessImageBox->Image = EdgeApply;
+		if (IsInBounds(Threshhold, 0, 255)) {
+			processImg = returnSobelfilter(processImg, Threshhold);
+			setHistogramChart(ProcessHistoChart, processImg);
+			ProcessImageBox->Image = processImg;
 			}
 		}
 }
@@ -861,15 +1031,17 @@ private: System::Void ClusterButton_Click(System::Object^  sender, System::Event
 	for (int i = 0; i < processImg->Width; i++) {
 		for (int j = 0; j < processImg->Height; j++) {
 			if (processImg->GetPixel(i, j).R == 0) {
+				//Start BFS
 				Region += 1;
 				queue<vector<int>> record ; record.push({ i, j });
 				Color newColor = RandColor();
 				processImg->SetPixel(i,j, newColor);
 				while (!record.empty()) {
 					vector<int> pixel = record.front(); record.pop();
-					for (int k = -1; k <= 1; k++) {	for (int l = -1; l <= 1; l++) {
-							if ((pixel[0] + k >= 0) && (pixel[1] + l >= 0) &&
-								(pixel[0] + k < processImg->Width) && (pixel[1] + l < processImg->Height)) {
+					for (int k = -1; k <= 1; k++) {	
+						for (int l = -1; l <= 1; l++) {
+							if (IsInBounds(pixel[0] + k, 0, processImg->Width-1) && 
+								IsInBounds(pixel[1] + l, 0, processImg->Height - 1)) {
 									if (processImg->GetPixel(pixel[0] + k, pixel[1] + l).R == 0) {
 										processImg->SetPixel(pixel[0] + k, pixel[1] + l, newColor);
 										record.push({ pixel[0] + k, pixel[1] + l });
@@ -894,6 +1066,80 @@ private: System::Void ClusterButton_Click(System::Object^  sender, System::Event
 private: System::Void ImageRegistrationButton_Click(System::Object^  sender, System::EventArgs^  e) {
 	ImageRegistrationForm ^ form = gcnew ImageRegistrationForm(openImg);
 	form->ShowDialog();
+}
+
+private: System::Void CannyEdgeDetectionButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	if (check_number(CannyLowThreshholdText->Text) && check_number(CannyUpperThreshholdText->Text)) {
+		Int32 weakEdge = System::Convert::ToInt32(CannyLowThreshholdText->Text) , strongEdge = System::Convert::ToInt32(CannyUpperThreshholdText->Text);
+		// 1. Guassian Low Pass Filter
+		processImg = returnGuassianFilter(5, processImg);
+
+		// 2. Sobel Edge Detection
+		Bitmap^ Vertical = returnVerticalSobel(processImg);
+		Bitmap^ Horizontal = returnHorizontalSobel(processImg);
+		vector<vector<float>> amplitude(processImg->Width, vector<float>(processImg->Height, 0.0));
+		vector<vector<float>> direction(processImg->Width, vector<float>(processImg->Height, 0.0));
+		vector<vector<float>> nmsamp(processImg->Width, vector<float>(processImg->Height, 0.0));
+		float verticalpixel, horizontalpixel, amp, direct;
+		for (int i = 0; i < processImg->Width; i++) {
+			for (int j = 0; j < processImg->Height; j++) {
+				verticalpixel = returnGrayPixel(Vertical->GetPixel(i, j));
+				horizontalpixel = returnGrayPixel(Horizontal->GetPixel(i, j));
+				amp = sqrt(verticalpixel*verticalpixel + horizontalpixel * horizontalpixel);
+				direct = atan(verticalpixel / horizontalpixel);
+				amplitude[i][j] = amp;
+				direction[i][j] = direct;
+				nmsamp[i][j] = amp;
+			}
+		}
+
+		// 3. Non Maximum Suppression
+		for (int i = 1; i < processImg->Width - 1; ++i) {
+			for (int j = 1; j < processImg->Height - 1; ++j) {
+				// 0~22.5度，157.5~180度 為 0 度區間
+				if (IsInBounds(direction[i][j], 0, 22.5 / 180 * M_PI) || IsInBounds(direction[i][j], 157.5 / 180 * M_PI, M_PI)) {
+					if (amplitude[i][j] < amplitude[i][j - 1] || amplitude[i][j] < amplitude[i][j])  nmsamp[i][j + 1] = 0;
+				}
+				// 22.5~67.5度 為 45度區間
+				else if (IsInBounds(direction[i][j], 22.5 / 180 * M_PI, 67.5 / 180 * M_PI)) {
+					if (amplitude[i][j] < amplitude[i - 1][j - 1] || amplitude[i][j] < amplitude[i + 1][j + 1])  nmsamp[i][j] = 0;
+				}
+				// 67.5~112.5度 為 90度區間
+				else if (IsInBounds(direction[i][j], 67.5 / 180 * M_PI, 112.5 / 180 * M_PI)) {
+					if (amplitude[i][j] < amplitude[i - 1][j] || amplitude[i][j] < amplitude[i + 1][j])  nmsamp[i][j] = 0;
+				}
+				//112.5~157.5度 為 135度區間
+				else {
+					if (amplitude[i][j] < amplitude[i - 1][j + 1] || amplitude[i][j] < amplitude[i + 1][j - 1])  nmsamp[i][j] = 0;
+				}
+			}
+		}
+
+		// 4. Double Thresholding
+
+		for (int i = 1; i < processImg->Width - 1; ++i) {
+			for (int j = 1; j < processImg->Height - 1; ++j) {
+				if (nmsamp[i][j] > strongEdge) processImg->SetPixel(i, j, returnGrayColor(255));
+				else if (nmsamp[i][j] < weakEdge) processImg->SetPixel(i, j, returnGrayColor(0));
+				else {
+					if (nmsamp[i - 1][j - 1] > strongEdge ||
+						nmsamp[i - 1][j] > strongEdge ||
+						nmsamp[i - 1][j + 1] > strongEdge ||
+						nmsamp[i][j - 1] > strongEdge ||
+						nmsamp[i][j + 1] > strongEdge ||
+						nmsamp[i + 1][j - 1] > strongEdge ||
+						nmsamp[i + 1][j] > strongEdge ||
+						nmsamp[i + 1][j + 1] > strongEdge) {
+						processImg->SetPixel(i, j, returnGrayColor(255));
+					}
+					else processImg->SetPixel(i, j, returnGrayColor(0));
+				}
+			}
+		}
+		processImg = completeEdge(processImg, 1);
+		setHistogramChart(ProcessHistoChart, processImg);
+		ProcessImageBox->Image = processImg;
+	}
 }
 };
 }

@@ -38,8 +38,8 @@ namespace DIP_HW1 {
 
 	private: int stage = 1;
 	private: Bitmap ^ OriginImg;
-	private: Bitmap ^ RegisImg;
 	private: Bitmap ^ ProcessImg;
+	private: Bitmap ^ ResultImg;
 	private: List<Point> OriginLocation;
 	private: List<Point> RegisLocation;
 	private: float Scaling = 0;
@@ -47,8 +47,8 @@ namespace DIP_HW1 {
 	private: float IntensityDiff = 0;
 
 	private: System::Windows::Forms::PictureBox^  OriginPicBox;
-	private: System::Windows::Forms::PictureBox^  RegisPicBox;
 	private: System::Windows::Forms::PictureBox^  ProcessPicBox;
+	private: System::Windows::Forms::PictureBox^  ResultPicBox;
 	private: System::Windows::Forms::Label^  Instructions;
 	private: System::Windows::Forms::Button^  LoadRegisButton;
 
@@ -72,14 +72,14 @@ namespace DIP_HW1 {
 		void InitializeComponent(void)
 		{
 			this->OriginPicBox = (gcnew System::Windows::Forms::PictureBox());
-			this->RegisPicBox = (gcnew System::Windows::Forms::PictureBox());
 			this->ProcessPicBox = (gcnew System::Windows::Forms::PictureBox());
+			this->ResultPicBox = (gcnew System::Windows::Forms::PictureBox());
 			this->Instructions = (gcnew System::Windows::Forms::Label());
 			this->LoadRegisButton = (gcnew System::Windows::Forms::Button());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->OriginPicBox))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->RegisPicBox))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ProcessPicBox))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ResultPicBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// OriginPicBox
@@ -92,23 +92,23 @@ namespace DIP_HW1 {
 			this->OriginPicBox->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &ImageRegistrationForm::OriginPicBox_Paint);
 			this->OriginPicBox->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &ImageRegistrationForm::OriginPicBox_MouseClick);
 			// 
-			// RegisPicBox
-			// 
-			this->RegisPicBox->Location = System::Drawing::Point(29, 438);
-			this->RegisPicBox->Name = L"RegisPicBox";
-			this->RegisPicBox->Size = System::Drawing::Size(596, 419);
-			this->RegisPicBox->TabIndex = 1;
-			this->RegisPicBox->TabStop = false;
-			this->RegisPicBox->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &ImageRegistrationForm::RegisPicBox_Paint);
-			this->RegisPicBox->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &ImageRegistrationForm::RegisPicBox_MouseClick);
-			// 
 			// ProcessPicBox
 			// 
-			this->ProcessPicBox->Location = System::Drawing::Point(654, 438);
+			this->ProcessPicBox->Location = System::Drawing::Point(29, 438);
 			this->ProcessPicBox->Name = L"ProcessPicBox";
-			this->ProcessPicBox->Size = System::Drawing::Size(596, 420);
-			this->ProcessPicBox->TabIndex = 2;
+			this->ProcessPicBox->Size = System::Drawing::Size(596, 419);
+			this->ProcessPicBox->TabIndex = 1;
 			this->ProcessPicBox->TabStop = false;
+			this->ProcessPicBox->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &ImageRegistrationForm::ProcessPicBox_Paint);
+			this->ProcessPicBox->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &ImageRegistrationForm::ProcessPicBox_MouseClick);
+			// 
+			// ResultPicBox
+			// 
+			this->ResultPicBox->Location = System::Drawing::Point(654, 438);
+			this->ResultPicBox->Name = L"ResultPicBox";
+			this->ResultPicBox->Size = System::Drawing::Size(596, 420);
+			this->ResultPicBox->TabIndex = 2;
+			this->ResultPicBox->TabStop = false;
 			// 
 			// Instructions
 			// 
@@ -144,14 +144,14 @@ namespace DIP_HW1 {
 			this->ClientSize = System::Drawing::Size(1283, 868);
 			this->Controls->Add(this->LoadRegisButton);
 			this->Controls->Add(this->Instructions);
+			this->Controls->Add(this->ResultPicBox);
 			this->Controls->Add(this->ProcessPicBox);
-			this->Controls->Add(this->RegisPicBox);
 			this->Controls->Add(this->OriginPicBox);
 			this->Name = L"ImageRegistrationForm";
 			this->Text = L"ImageRegistrationForm";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->OriginPicBox))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->RegisPicBox))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ProcessPicBox))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ResultPicBox))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -182,8 +182,8 @@ namespace DIP_HW1 {
 	private: System::Void LoadRegisButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		if (stage == 1) {
 			if (this->openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-				RegisImg = gcnew Bitmap(openFileDialog1->FileName);
-				RegisPicBox->Image = RegisImg;
+				ProcessImg = gcnew Bitmap(openFileDialog1->FileName);
+				ProcessPicBox->Image = ProcessImg;
 				LoadRegisButton->Text = L"Undo";
 				Instructions->Text = L"2. 請於圖片（一）進行點選四點";
 				stage = 2;
@@ -195,12 +195,12 @@ namespace DIP_HW1 {
 			Instructions->Text = L"2. 請於圖片（一）進行點選四點";
 		}
 		else if (stage == 4) {
-			ProcessImg = gcnew Bitmap(OriginImg->Width, OriginImg->Height);
-			//int ShiftX = OriginImg->Width / 2 - RegisImg->Width / 2;
-			//int ShiftY = OriginImg->Height / 2 - RegisImg->Height / 2;
+			ResultImg = gcnew Bitmap(OriginImg->Width, OriginImg->Height);
+			//int ShiftX = OriginImg->Width / 2 - ProcessImg->Width / 2;
+			//int ShiftY = OriginImg->Height / 2 - ProcessImg->Height / 2;
 			processRotateScaling();
 			this->IntensityDiff = IntensityDifference();
-			ProcessPicBox->Image = ProcessImg;
+			ResultPicBox->Image = ResultImg;
 			std::string text = "5. Intensity difference: ";
 			text += Float2String(this->IntensityDiff);
 			Instructions->Text = gcnew String(text.c_str());
@@ -213,20 +213,11 @@ namespace DIP_HW1 {
 			saveFileDialog1->Title = "Save an Image File";
 			if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 				String^ sfd = saveFileDialog1->FileName;
-				ProcessPicBox->Image->Save(sfd, System::Drawing::Imaging::ImageFormat::Jpeg);
+				ResultPicBox->Image->Save(sfd, System::Drawing::Imaging::ImageFormat::Jpeg);
 			}
 		}
 	}
-	/*
-	private: void drawOnPic(PictureBox^  pictureBox, int x, int y){
-		// Attach grapich to picturebox
-		Graphics g = pictureBox->CreateGraphics;  //I changed this.
-		// Create a new pen that we shall use for drawing the line
-		Pen^ PenStyle = gcnew Pen(Color::DimGray, 1);
-		// Draw a 50x50 pixels rectangle (x, y, width, hight)
-		g.DrawRectangle(PenStyle, x, y, 50, 50);
-	}
-	*/
+
 	private: System::Void OriginPicBox_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 		for (int i = 0; i < OriginLocation.Count; i++) {
 			Graphics ^ g = e->Graphics;
@@ -247,7 +238,7 @@ namespace DIP_HW1 {
 			}
 		}
 	}
-	private: System::Void RegisPicBox_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
+	private: System::Void ProcessPicBox_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 		for (int i = 0; i < RegisLocation.Count; i++) {
 			Graphics ^ g = e->Graphics;
 			// Create a new pen that we shall use for drawing the line
@@ -256,11 +247,11 @@ namespace DIP_HW1 {
 			g->DrawEllipse(PenStyle, RegisLocation[i].X-5, RegisLocation[i].Y-5, 10, 10);
 		}
 	}
-	private: System::Void RegisPicBox_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	private: System::Void ProcessPicBox_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 		if (stage == 3) {
 			Point coordinates = e->Location;
 			RegisLocation.Add(coordinates);
-			RegisPicBox->Invalidate();
+			ProcessPicBox->Invalidate();
 			if (RegisLocation.Count == 4) {
 			//Check if the two shape is similar
 				//check Edge
@@ -271,7 +262,7 @@ namespace DIP_HW1 {
 				float DiagonalScale = getDistance(OriginLocation[0], OriginLocation[2]) / getDistance(RegisLocation[0], RegisLocation[2]);
 				if ((abs(EdgeScale_1 - EdgeScale_2) < 0.1) && (abs(EdgeScale_2 - EdgeScale_3) < 0.1)
 					&& (abs(EdgeScale_3 - EdgeScale_4) < 0.1) && (abs(EdgeScale_4 - EdgeScale_1) < 0.1) && (abs(DiagonalScale - EdgeScale_4) < 0.1)) {
-					//check Angle
+					//getScaling
 					this->Scaling = (float)pow(EdgeScale_1*EdgeScale_2*EdgeScale_3*EdgeScale_4, 0.25);
 					//getAngle
 					int checkX1 = OriginLocation[1].X - OriginLocation[0].X;
@@ -301,28 +292,28 @@ namespace DIP_HW1 {
 	}
 	
 	private: void processRotateScaling() {
-		int ShiftX = ProcessImg->Width /2;	int ShiftY = ProcessImg->Height/2;
+		int ShiftX = ResultImg->Width /2;	int ShiftY = ResultImg->Height/2;
 		float COS = cos(-(this->Angle));
 		float SIN = sin(-(this->Angle));
-
-		for (int i = 0; i < ProcessImg->Width; i++) {
-			for (int j = 0; j < ProcessImg->Height; j++) {
-				int new_x = (int)(((i - ShiftX) * COS - (j - ShiftY) * SIN) / this->Scaling + RegisImg->Width / 2);
-				int new_y = (int)(((i - ShiftX) * SIN + (j - ShiftY) * COS) / this->Scaling + RegisImg->Height/2);
-				if (new_x >= 0 && new_y >= 0 && new_x < RegisImg->Width && new_y < RegisImg->Height)
-					ProcessImg->SetPixel(i, j, RegisImg->GetPixel(new_x, new_y));
-				else ProcessImg->SetPixel(i, j, Color::FromArgb(0, 0, 0));
+		//Iterate through ResultImg to get the projection point on ProcessImg
+		for (int i = 0; i < ResultImg->Width; i++) {
+			for (int j = 0; j < ResultImg->Height; j++) {
+				int new_x = (int)(((i - ShiftX) * COS - (j - ShiftY) * SIN) / this->Scaling + ProcessImg->Width / 2);
+				int new_y = (int)(((i - ShiftX) * SIN + (j - ShiftY) * COS) / this->Scaling + ProcessImg->Height/2);
+				if (new_x >= 0 && new_y >= 0 && new_x < ProcessImg->Width && new_y < ProcessImg->Height)
+					ResultImg->SetPixel(i, j, ProcessImg->GetPixel(new_x, new_y));
+				else ResultImg->SetPixel(i, j, Color::FromArgb(0, 0, 0));
 			}
 		}
 	}
 	private: float IntensityDifference() {
 		float Diff = 0;
-		for (int i = 0; i < ProcessImg->Width; i++) {
-			for (int j = 0; j < ProcessImg->Height; j++) {
-				Diff += (OriginImg->GetPixel(i, j).R - ProcessImg->GetPixel(i, j).R);
+		for (int i = 0; i < ResultImg->Width; i++) {
+			for (int j = 0; j < ResultImg->Height; j++) {
+				Diff += abs(OriginImg->GetPixel(i, j).R - ResultImg->GetPixel(i, j).R);
 			}
 		}
-		return Diff / (ProcessImg->Width*ProcessImg->Height);
+		return Diff / (ResultImg->Width*ResultImg->Height);
 	}
 
 
